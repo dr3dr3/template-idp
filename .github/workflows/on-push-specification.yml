@@ -48,13 +48,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 2
 
       - name: Get changed specs
         id: changed-specs
         uses: tj-actions/changed-files@v45
         with:
-          files: 'specification/**/*.yml'
+          files: specification/**
 
       - name: Matrix set for added files
         id: set-matrix-added
