@@ -1,5 +1,5 @@
 name: ON-PUSH-SPECIFICATION
-run-name: Specification Change triggered by ( ${{ github.event_name }} and run by ${{ github.actor }} )
+run-name: Specification Change ( Triggered by ${{ github.event_name }} and run by ${{ github.actor }} )
 
 on:
   workflow_dispatch:
@@ -48,13 +48,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Get changed specs
         id: changed-specs
         uses: tj-actions/changed-files@v45
         with:
-          files: 'specifications/**/*.yml'
+          files: 'specification/**/*.yml'
 
       - name: Matrix set for added files
         id: set-matrix-added
@@ -88,6 +88,7 @@ jobs:
   create-repositories:
     name: Create repositories from matrix
     needs: [define-matrix]
+    if: ${{ needs.define-matrix.outputs.matrix != '[]' }}
     strategy:
       matrix: 
         REPOS: ${{ needs.define-matrix.outputs.matrix }}
