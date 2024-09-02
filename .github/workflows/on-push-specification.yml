@@ -84,6 +84,7 @@ jobs:
             done < <(yq '.solution.services.fromTemplate[]' $file -o=json | jq -c)
           done
           matrix=$(echo $JSON | jq -c)
+          echo $matrix
           echo "MATRIX=$matrix" >> $GITHUB_ENV
 
   create-repositories:
