@@ -97,16 +97,15 @@ jobs:
     name: Create repositories from matrix
     needs: [define-matrix]
     strategy:
-      matrix: 
-        REPOS: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
     uses: dr3dr3/core-ops/.github/workflows/github-repositories-changes.yml@main 
     with:
-      repoName: ${{ matrix.REPOS.repoName }}
-      repoDesc: ${{ matrix.REPOS.repoDesc }}
-      templateRepoOwner: ${{ matrix.REPOS.templateRepoOwner }}
-      templateRepoName: ${{ matrix.REPOS.templateRepoName }}
-      branchingStrategy: ${{ matrix.REPOS.branchingStrategy }}
-      enableGitHubPages: ${{ matrix.REPOS.enableGitHubPages }}
+      repoName: ${{ matrix.repoName }}
+      repoDesc: ${{ matrix.repoDesc }}
+      templateRepoOwner: ${{ matrix.templateRepoOwner }}
+      templateRepoName: ${{ matrix.templateRepoName }}
+      branchingStrategy: ${{ matrix.branchingStrategy }}
+      enableGitHubPages: ${{ matrix.enableGitHubPages }}
     permissions:
       contents: write
     secrets: inherit
