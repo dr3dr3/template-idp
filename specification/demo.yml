@@ -1,5 +1,5 @@
 solution:
-  prefix: testing
+  prefix: temp
   description: 'Demo solution that is also used for end-to-end testing purposes'
   services:
     fromTemplate:
