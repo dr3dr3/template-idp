@@ -91,7 +91,7 @@ jobs:
     strategy:
       matrix: 
         REPOS: ${{ needs.define-matrix.outputs.matrix }}
-    uses: dr3dr3/core-ops/.github/workflows/github-repositories-change.yml@main
+    uses: dr3dr3/core-ops/.github/workflows/github-repositories-changes.yml@main 
     with:
       repoName: ${{ matrix.REPOS.repoName }}
       repoDesc: ${{ matrix.REPOS.repoDesc }}
