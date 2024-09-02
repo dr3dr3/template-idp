@@ -1,0 +1,7 @@
+repositories:
+
+  - name: 'Core CI Pipeline'
+    repoName: pipeline-as-a-service
+    defaultGitflow: tbd
+    serviceType: pipeline
+    status: active

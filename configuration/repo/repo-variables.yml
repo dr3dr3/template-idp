@@ -1,0 +1,141 @@
+repoVariables:
+
+  - name: SOLUTION
+    repo: andre-nextjs
+    value: nextjs
+  - name: SOLN_GROUP
+    repo: andre-nextjs
+    value: www
+  - name: SOLN_DIR
+    repo: andre-nextjs
+    value: landing
+  - name: OUTPUT_DIR
+    repo: andre-nextjs
+    value: out
+  - name: SITE_URL
+    repo: andre-nextjs
+    value: https://ci-www.andredreyer.com
+  - name: BUILD_FLAGS_URL
+    repo: andre-nextjs
+    value: https://dr3dr3.github.io/andre-featurevisor/datafiles/build/datafile-tag-all.json
+  - name: DEPLOY_CI
+    repo: andre-nextjs
+    value: GITHUB-PAGES
+  - name: REPO_GITOPS
+    repo: andre-nextjs
+    value: dr3dr3/andre-gitops
+  - name: REPO_STAGE
+    repo: andre-nextjs
+    value: dr3dr3/andre-stage
+  - name: REPO_PROD
+    repo: andre-nextjs
+    value: dr3dr3/andre-prod
+  - name: CHECK_LINKS
+    repo: andre-nextjs
+    value: 'false'
+
+  - name: SOLUTION
+    repo: andre-revealmd
+    value: revealmd
+  - name: SOLN_GROUP
+    repo: andre-revealmd
+    value: www
+  - name: SOLN_DIR
+    repo: andre-revealmd
+    value: revealmd
+  - name: OUTPUT_DIR
+    repo: andre-revealmd
+    value: out
+  - name: SITE_URL
+    repo: andre-revealmd
+    value: https://ci-slides.andredreyer.com
+  - name: DEPLOY_CI
+    repo: andre-revealmd
+    value: GITHUB-PAGES
+  - name: REPO_GITOPS
+    repo: andre-revealmd
+    value: dr3dr3/andre-gitops
+  - name: REPO_FLAGS
+    repo: andre-revealmd
+    value: dr3dr3/andre-feature-flags
+  - name: REPO_STAGE
+    repo: andre-revealmd
+    value: dr3dr3/andre-stage
+  - name: REPO_PROD
+    repo: andre-revealmd
+    value: dr3dr3/andre-prod
+  - name: CHECK_LINKS
+    repo: andre-revealmd
+    value: 'false'
+
+  - name: SOLUTION
+    repo: andre-featurevisor
+    value: featurevisor
+  - name: SOLN_GROUP
+    repo: andre-featurevisor
+    value: flags
+  - name: SOLN_DIR
+    repo: andre-featurevisor
+    value: featureflags
+  - name: OUTPUT_DIR
+    repo: andre-featurevisor
+    value: out
+  - name: SITE_URL
+    repo: andre-featurevisor
+    value: https://ci-flags.andredreyer.com
+  - name: DEPLOY_CI
+    repo: andre-featurevisor
+    value: GITHUB-PAGES
+  - name: REPO_GITOPS
+    repo: andre-featurevisor
+    value: dr3dr3/andre-gitops
+  - name: REPO_FLAGS
+    repo: andre-featurevisor
+    value: dr3dr3/andre-feature-flags
+  - name: REPO_STAGE
+    repo: andre-featurevisor
+    value: dr3dr3/andre-stage
+  - name: REPO_PROD
+    repo: andre-featurevisor
+    value: dr3dr3/andre-prod
+  - name: CHECK_LINKS
+    repo: andre-featurevisor
+    value: 'false'
+
+  - name: SOLN_GROUP
+    repo: andre-stage
+    value: deployments
+  - name: SITE_URL
+    repo: andre-stage
+    value: https://stg.andredreyer.com
+  - name: CHECK_LINKS
+    repo: andre-stage
+    value: 'true'
+  - name: REPO_GITOPS
+    repo: andre-stage
+    value: dr3dr3/andre-gitops
+  - name: DEPLOY_BLUE
+    repo: andre-stage
+    value: GITHUB-PAGES
+  - name: ENVIRONMENT
+    repo: andre-stage
+    value: stg
+
+  - name: SOLN_GROUP
+    repo: andre-prod
+    value: deployments
+  - name: SITE_URL
+    repo: andre-prod
+    value: https://www.andredreyer.com
+  - name: CHECK_LINKS
+    repo: andre-prod
+    value: 'true'
+  - name: REPO_GITOPS
+    repo: andre-prod
+    value: dr3dr3/andre-gitops
+  - name: DEPLOY_BLUE
+    repo: andre-prod
+    value: GITHUB-PAGES
+  - name: ENVIRONMENT
+    repo: andre-prod
+    value: prd

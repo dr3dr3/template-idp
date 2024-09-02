@@ -1,0 +1,34 @@
+name: STATUS-CHECKS
+run-name: Status Checks ( ${{ github.event_name }} run by ${{ github.actor }} )
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [ready_for_review]
+
+permissions:
+  contents: none
+
+jobs:
+
+  status-checks:
+    name: Status checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: none
+
+    steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Schema validation
+        id: schema-validation
+        run: .github/actions-scripts/schema-validation.mjs
+

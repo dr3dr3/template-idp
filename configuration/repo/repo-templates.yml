@@ -1,0 +1,26 @@
+repositories:
+
+  - name: 'Next.js Starter'
+    repoName: template-nextjs
+    defaultGitflow: tbd
+    defaultRoute: '/'
+    serviceType: frontend
+    status: active
+
+  - name: 'Reveal-MD Starter'
+    repoName: template-revealmd
+    defaultGitflow: tbd
+    serviceType: frontend
+    defaultRoute: '/present'
+
+  - name: 'Docusaurus Starter'
+    repoName: template-docusaurus
+    defaultGitflow: tbd
+    serviceType: frontend
+    defaultRoute: '/docs'
+
+  - name: 'Feature Flags Starter'
+    repoName: template-featurevisor
+    defaultGitflow: tbd
+    serviceType: frontend
+    defaultRoute: '/flags'

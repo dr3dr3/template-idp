@@ -1,0 +1,11 @@
+repoLabels:
+
+  - name: ssa-slfb
+    description: 'Short-lived Feature Branch'
+    repo: andre-gitops
+    color: 'bcf5db'
+
+  - name: ssa-codespace
+    description: 'Codespace for SLFB'
+    repo: andre-gitops
+    color: 'bcf5db'

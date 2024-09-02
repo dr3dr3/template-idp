@@ -1,0 +1,16 @@
+envVariables:
+
+  # - name: NEXT_PUBLIC_FF_URL
+  #   repo: andre-nextjs
+  #   environment: github-pages
+  #   value: https://dr3dr3.github.io/andre-featurevisor/datafiles/ci/datafile-tag-all.json
+
+  # - name: NEXT_PUBLIC_FF_URL
+  #   repo: andre-stage
+  #   environment: github-pages
+  #   value: https://dr3dr3.github.io/andre-featurevisor/datafiles/stg/datafile-tag-all.json
+
+  # - name: NEXT_PUBLIC_FF_URL
+  #   repo: andre-prod
+  #   environment: github-pages
+  #   value: https://dr3dr3.github.io/andre-featurevisor/datafiles/prd/datafile-tag-all.json
