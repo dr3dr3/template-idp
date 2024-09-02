@@ -62,6 +62,7 @@ jobs:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
         run: |
           JSON=$(jq -n '[]')
+          echo $ADDED_FILES
           for file in ${ADDED_FILES}; do
             while read i; do
               PREFIX=$(yq '.solution.prefix' specification/$file -r)
@@ -88,7 +89,7 @@ jobs:
   create-repositories:
     name: Create repositories from matrix
     needs: [define-matrix]
-    if: ${{ needs.define-matrix.outputs.matrix != '[]' }}
+    if: ${{ needs.define-matrix.outputs.matrix != '' }}
     strategy:
       matrix: 
         REPOS: ${{ needs.define-matrix.outputs.matrix }}
