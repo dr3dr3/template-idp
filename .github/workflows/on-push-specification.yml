@@ -65,10 +65,10 @@ jobs:
           echo $ADDED_FILES
           for file in ${ADDED_FILES}; do
             while read i; do
-              PREFIX=$(yq '.solution.prefix' specification/$file -r)
+              PREFIX=$(yq '.solution.prefix' $file -r)
               ROUTE=$(echo $i | jq -r '.route')
               RN="${PREFIX}-${ROUTE}"
-              RD=$(yq '.solution.description' specification/$file -r)
+              RD=$(yq '.solution.description' $file -r)
               TN=$(echo $i | jq -r '.repoName')
               TO=$(echo $i | jq -r '.repoOwner')
               BS=$(echo $i | jq -r '.branchingStrategy')
@@ -81,7 +81,7 @@ jobs:
                 --arg branchingStrategy "$BS" \
                 --arg serviceType "$ST" \
                 '. += [$ARGS.named]')
-            done < <(yq '.solution.services.fromTemplate[]' specification/$file -o=json | jq -c)
+            done < <(yq '.solution.services.fromTemplate[]' $file -o=json | jq -c)
           done
           echo $JSON | jq
           echo "MATRIX=$JSON" >> $GITHUB_ENV
