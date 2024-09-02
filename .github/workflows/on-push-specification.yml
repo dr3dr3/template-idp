@@ -63,8 +63,8 @@ jobs:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
           ADDED_FILES_COUNT: ${{ steps.changed-specs.outputs.added_files_count }}
         run: |
-          ADDED_FILES="demo.yml"
-          ADDED_FILES_COUNT=1
+          # ADDED_FILES="demo.yml"
+          # ADDED_FILES_COUNT=1
           JSON=$(jq -n '[]')
           echo $ADDED_FILES
           for file in ${ADDED_FILES}; do
