@@ -42,6 +42,7 @@ jobs:
       contents: read
     outputs:
       matrix: ${{ steps.set-matrix-added.outputs.MATRIX }}
+      count: ${{ steps.set-matrix-added.outputs.COUNT }}
 
     steps:
 
@@ -60,6 +61,7 @@ jobs:
         id: set-matrix-added
         env:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
+          ADDED_FILES_COUNT: ${{ steps.changed-specs.outputs.added_files_count }}
         run: |
           JSON=$(jq -n '[]')
           echo $ADDED_FILES
@@ -85,12 +87,14 @@ jobs:
           done
           matrix=$(echo $JSON | jq -c)
           echo $matrix
+          echo $ADDED_FILES_COUNT
           echo "MATRIX=$matrix" >> $GITHUB_ENV
+          echo "COUNT=$ADDED_FILES_COUNT" >> $GITHUB_ENV
 
   create-repositories:
     name: Create repositories from matrix
     needs: [define-matrix]
-    if: ${{ needs.define-matrix.outputs.matrix != '' }}
+    if: ${{ needs.define-matrix.outputs.count > 0 }}
     strategy:
       matrix: 
         REPOS: ${{ needs.define-matrix.outputs.matrix }}
