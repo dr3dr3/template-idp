@@ -63,8 +63,8 @@ jobs:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
           ADDED_FILES_COUNT: ${{ steps.changed-specs.outputs.added_files_count }}
         run: |
-          # ADDED_FILES="demo.yml"
-          # ADDED_FILES_COUNT=1
+          ADDED_FILES="demo.yml"
+          ADDED_FILES_COUNT=1
           JSON=$(jq -n '[]')
           echo $ADDED_FILES
           for file in ${ADDED_FILES}; do
@@ -96,6 +96,7 @@ jobs:
   create-repositories:
     name: Create repositories from matrix
     needs: [define-matrix]
+    if: ${{ needs.define-matrix.outputs.count > 0 }}
     strategy:
       matrix: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
     uses: dr3dr3/core-ops/.github/workflows/github-repositories-changes.yml@main 
