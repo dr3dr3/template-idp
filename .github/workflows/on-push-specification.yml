@@ -10,7 +10,7 @@ on:
       - 'specification/**/*.yml'
 
 permissions:
-  contents: none
+  contents: write
 
 jobs:
 
