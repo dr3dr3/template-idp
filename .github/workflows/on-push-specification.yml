@@ -62,7 +62,7 @@ jobs:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
           EVENT: ${{ github.event_name }}
         run: |
-          if $EVENT == "workflow_dispatch"
+          if [[ $EVENT = "workflow_dispatch" ]]
           then
             ADDED_FILES="specification/demo.yml"
           fi
