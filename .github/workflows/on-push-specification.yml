@@ -60,8 +60,12 @@ jobs:
         id: set-matrix-added
         env:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
+          EVENT: ${{ github.event_name }}
         run: |
-          ADDED_FILES="specification/demo.yml"
+          if $EVENT == "workflow_dispatch"
+          then
+            ADDED_FILES="specification/demo.yml"
+          fi
           JSON=$(jq -n '[]')
           echo $ADDED_FILES
           for file in ${ADDED_FILES}; do
@@ -106,7 +110,6 @@ jobs:
       templateRepoOwner: ${{ matrix.REPOS.templateRepoOwner }}
       templateRepoName: ${{ matrix.REPOS.templateRepoName }}
       branchingStrategy: ${{ matrix.REPOS.branchingStrategy }}
-      enableGitHubPages: ${{ matrix.REPOS.enableGitHubPages }}
     permissions:
       contents: write
     secrets: inherit
