@@ -42,7 +42,6 @@ jobs:
       contents: read
     outputs:
       matrix: ${{ steps.set-matrix-added.outputs.MATRIX }}
-      count: ${{ steps.set-matrix-added.outputs.COUNT }}
 
     steps:
 
@@ -61,10 +60,8 @@ jobs:
         id: set-matrix-added
         env:
           ADDED_FILES: ${{ steps.changed-specs.outputs.added_files }}
-          ADDED_FILES_COUNT: ${{ steps.changed-specs.outputs.added_files_count }}
         run: |
-          ADDED_FILES="specification/demo.yml"
-          ADDED_FILES_COUNT=1
+          # ADDED_FILES="specification/demo.yml"
           JSON=$(jq -n '[]')
           echo $ADDED_FILES
           for file in ${ADDED_FILES}; do
@@ -92,34 +89,24 @@ jobs:
           echo 'MATRIX<<EOF' >> $GITHUB_OUTPUT
           echo $matrix >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
-          echo "COUNT=$ADDED_FILES_COUNT" >> $GITHUB_ENV
+          echo $matrix >> $GITHUB_STEP_SUMMARY
 
   create-repositories:
     name: Create repositories from matrix
     needs: [define-matrix]
-    # if: ${{ needs.define-matrix.outputs.count != '0' }}
+    if: ${{ needs.define-matrix.outputs.matrix != '[]' }}
     strategy:
+      fail-fast: true
       matrix: 
         REPOS: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
-    runs-on: ubuntu-latest
-    env:
-      REPO: ${{ matrix.REPOS.repoName }}
-
-    steps:
-
-      - name: Test
-        run: echo $REPO
-
-
-
-    # uses: dr3dr3/core-ops/.github/workflows/github-repositories-changes.yml@main 
-    # with:
-    #   repoName: ${{ matrix.repositories.repoName }}
-    #   repoDesc: ${{ matrix.repositories.repoDesc }}
-    #   templateRepoOwner: ${{ matrix.repositories.templateRepoOwner }}
-    #   templateRepoName: ${{ matrix.repositories.templateRepoName }}
-    #   branchingStrategy: ${{ matrix.repositories.branchingStrategy }}
-    #   enableGitHubPages: ${{ matrix.repositories.enableGitHubPages }}
-    # permissions:
-    #   contents: write
-    # secrets: inherit
+    uses: dr3dr3/core-ops/.github/workflows/github-repositories-changes.yml@main 
+    with:
+      repoName: ${{ matrix.REPOS.repoName }}
+      repoDesc: ${{ matrix.REPOS.repoDesc }}
+      templateRepoOwner: ${{ matrix.REPOS.templateRepoOwner }}
+      templateRepoName: ${{ matrix.REPOS.templateRepoName }}
+      branchingStrategy: ${{ matrix.REPOS.branchingStrategy }}
+      enableGitHubPages: ${{ matrix.REPOS.enableGitHubPages }}
+    permissions:
+      contents: write
+    secrets: inherit

@@ -1,0 +1,13 @@
+solution:
+  prefix: temp
+  description: 'Demo solution that is also used for end-to-end testing purposes'
+  services:
+    fromTemplate:
+    - repoOwner: dr3dr3
+      repoName: template-revealmd
+      route: present
+      branchingStrategy: tbd
+    useExisting:
+    - repoOwner: dr3dr3
+      repoName: demo-nextjs
+      route: root
