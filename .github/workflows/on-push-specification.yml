@@ -87,7 +87,7 @@ jobs:
                 '. += [$ARGS.named]')
             done < <(yq '.solution.services.fromTemplate[]' $file -o=json | jq -c)
           done
-          matrix=$(echo $JSON | jq -r 'tostring')
+          matrix=$(echo $JSON | jq -c 'tostring')
           echo $matrix
           echo $ADDED_FILES_COUNT
           echo "MATRIX=$matrix" >> $GITHUB_ENV
@@ -101,13 +101,11 @@ jobs:
       matrix: 
         repositories: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
-    env:
-      MATRIX: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
 
     steps:
 
       - name: Test
-        run: echo $MATRIX
+        run: echo ${{ matrix.repositories.repoName }}
 
 
 
