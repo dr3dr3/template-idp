@@ -98,7 +98,8 @@ jobs:
     needs: [define-matrix]
     # if: ${{ needs.define-matrix.outputs.count != '0' }}
     strategy:
-      matrix: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
+      matrix: 
+        repositories: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
     env:
       MATRIX: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
@@ -112,12 +113,12 @@ jobs:
 
     # uses: dr3dr3/core-ops/.github/workflows/github-repositories-changes.yml@main 
     # with:
-    #   repoName: ${{ matrix.repoName }}
-    #   repoDesc: ${{ matrix.repoDesc }}
-    #   templateRepoOwner: ${{ matrix.templateRepoOwner }}
-    #   templateRepoName: ${{ matrix.templateRepoName }}
-    #   branchingStrategy: ${{ matrix.branchingStrategy }}
-    #   enableGitHubPages: ${{ matrix.enableGitHubPages }}
+    #   repoName: ${{ matrix.repositories.repoName }}
+    #   repoDesc: ${{ matrix.repositories.repoDesc }}
+    #   templateRepoOwner: ${{ matrix.repositories.templateRepoOwner }}
+    #   templateRepoName: ${{ matrix.repositories.templateRepoName }}
+    #   branchingStrategy: ${{ matrix.repositories.branchingStrategy }}
+    #   enableGitHubPages: ${{ matrix.repositories.enableGitHubPages }}
     # permissions:
     #   contents: write
     # secrets: inherit
