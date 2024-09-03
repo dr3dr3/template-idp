@@ -99,13 +99,13 @@ jobs:
     # if: ${{ needs.define-matrix.outputs.count != '0' }}
     strategy:
       matrix: 
-        repositories: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
+        includes: ${{ fromJson(needs.define-matrix.outputs.matrix) }}
     runs-on: ubuntu-latest
 
     steps:
 
       - name: Test
-        run: echo ${{ matrix.repositories.repoName }}
+        run: echo ${{ matrix.includes.repoName }}
 
 
 
