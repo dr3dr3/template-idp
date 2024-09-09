@@ -1,0 +1,9 @@
+environments:
+  - id: STG
+    name: Stage
+    target: VERCEL
+    variables-from-repo:
+      - name: VERCEL_PROJECT_ID
+    secrets-in-idp:
+      - name: VERCEL_TOKEN
+      - name: VERCEL_ORG_ID
