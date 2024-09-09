@@ -16,9 +16,9 @@ async function getRepoVariables() {
 
     try {
         const { data:repovar } = await octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
-            owner: $REPO_OWNER,
-            repo: $REPO_NAME,
-            name: $VAR_NAME,
+            owner: process.env.REPO_OWNER,
+            repo: process.env.REPO_NAME,
+            name: process.env.VAR_NAME,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28'
             }});
