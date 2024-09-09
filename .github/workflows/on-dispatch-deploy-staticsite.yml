@@ -56,8 +56,8 @@ jobs:
     needs: [get-build-artifacts-workflow-dispatch, get-build-artifacts-repo-dispatch]
     if: |
       always() &&
-      (needs.get-build-artifacts-workflow-dispatch.result == 'skipped' || needs.get-build-artifacts-workflow-dispatch.result == 'success') &&
-      (needs.get-build-artifacts-repo-dispatch.result == 'skipped' || needs.get-build-artifacts-repo-dispatch.result == 'success')
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
