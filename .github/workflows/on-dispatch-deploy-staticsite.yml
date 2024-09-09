@@ -85,6 +85,16 @@ jobs:
     outputs:
       vercel-project-id: ${{ steps.vercel-project-id.outputs.result }}
     steps:
+      
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Install Node dependencies
+        run: npm install
+
       - name: Check variable exists
         id: vercel-project-id
         run: .github/actions-scripts/repo-vars-get-value.mjs
