@@ -4,7 +4,7 @@ run-name: Deploy Static Site ( Triggered by ${{ github.event_name }} and run by 
 on:
   repository_dispatch:
     types: [deploy-staticsite]
-  workflow_call:
+  workflow_dispatch:
     inputs:
       success:
         required: true
@@ -89,7 +89,7 @@ jobs:
         id: vercel-project-id
         run: .github/actions-scripts/repo-vars-get-value.mjs
         env:
-          GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPOS }}
+          GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
           REPO_OWNER: ${{ inputs.source-repo-owner }}
           REPO_NAME: ${{ inputs.source-repo-name }}
           VAR_NAME: 'VERCEL_PROJECT_ID'
@@ -97,7 +97,7 @@ jobs:
   deploy-vercel:
     name: Deploy to ${{ github.event.client_payload.deployment-stage }} environment
     needs: [vercel-variables, get-build-artifacts, environment-logic]
-    if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
+    ### if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
     uses: dr3dr3/core-ops/.github/workflows/staticsite-vercel-deployment.yml@main
     permissions:
       contents: read
