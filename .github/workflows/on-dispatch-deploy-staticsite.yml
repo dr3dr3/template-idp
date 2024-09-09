@@ -76,7 +76,7 @@ jobs:
         run: |
           config=$(ds=$DEPLOYMENT_STAGE yq '.environments[] | select(.id == env(ds))' configuration/environments/staticsite.yml -o=json | jq -c)
           target=$(echo $config | jq -r '.target')
-          echo $target
+          echo "### 🎯 Target = $target" >> $GITHUB_STEP_SUMMARY
           echo "TARGET=$target" >> $GITHUB_OUTPUT
 
   #===== VERCEL =========================================================================================#
@@ -115,7 +115,7 @@ jobs:
 
   deploy-vercel:
     name: Deploy to ${{ github.event.client_payload.deployment-stage }} environment
-    needs: [vercel-variables, environment-logic]
+    needs: [vercel-variables]
     ### if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
     uses: dr3dr3/core-ops/.github/workflows/staticsite-vercel-deployment.yml@main
     permissions:
