@@ -6,7 +6,7 @@ import { setOutput, setFailed } from "@actions/core";
 console.assert(process.env.GHA_TOKEN, "GHA_TOKEN not present");
 console.assert(process.env.REPO_OWNER, "REPO_OWNER not present");
 console.assert(process.env.REPO_NAME, "REPO_NAME not present");
-console.assert(process.env.SECRET_NAME, "SECRET_NAME not present");
+console.assert(process.env.VAR_NAME, "VAR_NAME not present");
 
 const octokit = getOctokit(process.env.GHA_TOKEN);
 
@@ -16,9 +16,9 @@ async function getRepoVariables() {
 
     try {
         const { data:repovar } = await octokit.request('GET /repos/{owner}/{repo}/actions/variables/{name}', {
-            owner: 'OWNER',
-            repo: 'REPO',
-            name: 'NAME',
+            owner: $REPO_OWNER,
+            repo: $REPO_NAME,
+            name: $VAR_NAME,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28'
             }});
