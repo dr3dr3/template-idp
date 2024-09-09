@@ -60,8 +60,7 @@ jobs:
       - name: Target
         id: target
         run: |
-          echo $DEPLOYMENT_STAGE
-          config=$(yq '.environments[] | select(.id == "$DEPLOYMENT_STAGE")' configuration/environments/staticsite.yml -o=json | jq -c)
+          config=$(ds=$DEPLOYMENT_STAGE yq '.environments[] | select(.id == env(ds))' configuration/environments/staticsite.yml -o=json | jq -c)
           target=$(echo $config | jq -r '.target')
           echo $target
           echo "TARGET=$target" >> $GITHUB_OUTPUT
