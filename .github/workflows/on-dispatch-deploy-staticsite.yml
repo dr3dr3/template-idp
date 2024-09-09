@@ -31,7 +31,6 @@ permissions:
 
 jobs:
   
-  ### TODO: May need to get build artifacts from other sources???
   get-build-artifacts-workflow-dispatch:
     name: Get build artifact
     if: ${{ github.event_name == 'workflow_dispatch' }}
@@ -54,6 +53,11 @@ jobs:
 
   environment-logic:
     name: Get target environment for deployment
+    needs: [get-build-artifacts-workflow-dispatch, get-build-artifacts-repo-dispatch]
+    if: |
+      always() &&
+      (needs.get-build-artifacts-workflow-dispatch.result == 'skipped' || needs.get-build-artifacts-workflow-dispatch.result == 'success') &&
+      (needs.get-build-artifacts-repo-dispatch.result == 'skipped' || needs.get-build-artifacts-repo-dispatch.result == 'success')
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
@@ -62,9 +66,6 @@ jobs:
       target: ${{ steps.target.outputs.TARGET }}
     env:
       DEPLOYMENT_STAGE: ${{ github.event.client_payload.deployment-stage || inputs.deployment-stage }}
-    ### TODO: Read config from environment/staticsite.yml
-    ### TODO: Get env variables from service repo where need (as outputs for deploy step). Secrets?
-    ### TODO: Check infrastructure is ready (i.e. Vercel project exists)
     steps:
 
       - name: Checkout
@@ -78,15 +79,13 @@ jobs:
           echo $target
           echo "TARGET=$target" >> $GITHUB_OUTPUT
 
-  ### New job... IF infrastructure is not ready, then do day1 creation of infrastructure
-
-  ### New job... check if required secrets exist (i.e. VERCEL_ORG_ID)
-
   #===== VERCEL =========================================================================================#
+
+  ### New job... IF infrastructure is not ready, then do day1 creation of infrastructure
 
   vercel-variables:
     name: Set Vercel environment variables
-    needs: [get-build-artifacts-workflow-dispatch, get-build-artifacts-repo-dispatch, environment-logic]
+    needs: [environment-logic]
     if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
