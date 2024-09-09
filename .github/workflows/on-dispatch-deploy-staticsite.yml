@@ -81,11 +81,11 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: none
     outputs:
       vercel-project-id: ${{ steps.vercel-project-id.outputs.result }}
     steps:
-      
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -110,7 +110,7 @@ jobs:
     ### if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
     uses: dr3dr3/core-ops/.github/workflows/staticsite-vercel-deployment.yml@main
     permissions:
-      contents: read
+      contents: none
     secrets: inherit
     with:
       artefact-ref: ${{ format('{0}-{1}', 'RC', github.run_id ) }}
