@@ -1,28 +1,9 @@
-name: ON-DISPATCH-DEPLOY-STATICSITE
+name: ON-DISPATCH-STATICSITE-DEPLOYMENT
 run-name: Deploy Static Site ( Triggered by ${{ github.event_name }} and run by ${{ github.actor }} )
 
 on:
   repository_dispatch:
     types: [deploy-staticsite]
-  workflow_dispatch:
-    inputs:
-      deployment-stage:
-        description: 'Deployment stage (SBX, CI, STG, PROD)'
-        required: true
-        type: choice
-        options:
-          - SBX
-          - CI
-          - STG
-          - PROD
-      source-repo-owner:
-        description: 'Source repository owner'
-        required: true
-        type: string
-      source-repo-name:
-        description: 'Source repository name'
-        required: true
-        type: string
   
 permissions:
   contents: read
@@ -31,17 +12,7 @@ permissions:
 
 jobs:
   
-  get-build-artifacts-workflow-dispatch:
-    name: Get build artifact
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    uses: dr3dr3/core-pipeline/.github/workflows/staticsite-get-build-artifact.yml@main
-    permissions:
-      contents: none
-    with:
-      artifact-url: ${{ format('{0}/{1}/{2}/{3}', 'https://api.github.com/repos', inputs.source-repo-owner, inputs.source-repo-name, 'releases/latest' ) }}
-      artifact-ref: ${{ format('{0}-{1}', 'RC', github.run_id ) }}
-
-  get-build-artifacts-repo-dispatch:
+  get-build-artifacts:
     name: Get build artifact
     if: ${{ github.event.client_payload.success }}
     uses: dr3dr3/core-pipeline/.github/workflows/staticsite-get-build-artifact.yml@main
@@ -53,11 +24,7 @@ jobs:
 
   environment-logic:
     name: Get target environment for deployment
-    needs: [get-build-artifacts-workflow-dispatch, get-build-artifacts-repo-dispatch]
-    if: |
-      always() &&
-      !contains(needs.*.result, 'failure') &&
-      !contains(needs.*.result, 'cancelled')
+    needs: [get-build-artifacts]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
@@ -65,7 +32,7 @@ jobs:
     outputs:
       target: ${{ steps.target.outputs.TARGET }}
     env:
-      DEPLOYMENT_STAGE: ${{ github.event.client_payload.deployment-stage || inputs.deployment-stage }}
+      DEPLOYMENT_STAGE: ${{ github.event.client_payload.deployment-stage }}
     steps:
 
       - name: Checkout
@@ -84,7 +51,7 @@ jobs:
   ### New job... IF infrastructure is not ready, then do day1 creation of infrastructure
 
   vercel-variables:
-    name: Set Vercel environment variables
+    name: Get variables needed for Vercel
     needs: [environment-logic]
     if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
     timeout-minutes: 10
@@ -109,8 +76,8 @@ jobs:
         run: .github/actions-scripts/repo-vars-get-value.mjs
         env:
           GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
-          REPO_OWNER: ${{ inputs.source-repo-owner }}
-          REPO_NAME: ${{ inputs.source-repo-name }}
+          REPO_OWNER: ${{ github.event.client_payload.source-repo-owner }}
+          REPO_NAME: ${{ github.event.client_payload.source-repo-name }}
           VAR_NAME: 'VERCEL_PROJECT_ID'
 
   deploy-vercel:
@@ -124,3 +91,5 @@ jobs:
     with:
       artefact-ref: ${{ format('{0}-{1}', 'RC', github.run_id ) }}
       vercel-project-id: ${{ needs.vercel-variables.outputs.vercel-project-id }}
+
+  ### TODO: Post deployment steps, including tests. Run from core-pipeline.
