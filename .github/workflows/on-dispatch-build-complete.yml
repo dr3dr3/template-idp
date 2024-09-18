@@ -40,7 +40,7 @@ jobs:
           score=$(yq '.resources[].type' score.yml -o=csv)
           array=$(yq '.resources[].type' score.yml -o=csv)
           for resource in $array; do
-            PAYLOAD=$(r="$resource" yq '.resources[] | select(.type == env(r) )' score.yml -o=json | jq -c)
+            PAYLOAD=$(r="$resource" yq '.resources[] | select(.type == env(r) )' score.yml -o=json | jq -r)
             echo "Payload: $PAYLOAD"
             curl -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Authorization: token ${{ env.GHA_TOKEN }}" \
