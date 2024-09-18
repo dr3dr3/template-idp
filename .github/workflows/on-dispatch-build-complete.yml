@@ -37,14 +37,16 @@ jobs:
           TARGET_REPO: dr3dr3/template-idp
         run: |
           echo "### 📄 Reading score file" >> $GITHUB_STEP_SUMMARY
-          score=$(yq '.resources[].type' score.yml -o=csv)
           array=$(yq '.resources[].type' score.yml -o=csv)
           for resource in $array; do
-            PAYLOAD=$(r="$resource" yq '.resources[] | select(.type == env(r) )' score.yml -o=json | jq -r)
-            echo "Payload: $PAYLOAD"
+            PAYLOAD=$(r="$resource" yq '.resources[] | select(.type == env(r) )' score.yml -o=json | jq -c)
+            EVENT=$(jq -n '{"event_type":"test"}' -c)
+            DATA=$(echo $EVENT | jq --argjson client_payload "$PAYLOAD" '. += $ARGS.named' -c)
+            echo $DATA
+            echo "Dispatched: $DATA" >> $GITHUB_STEP_SUMMARY
             curl -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Authorization: token ${{ env.GHA_TOKEN }}" \
-            --request POST --data '{"event_type": "test", "client_payload": $PAYLOAD}' \
+            --request POST --data ${DATA} \
             https://api.github.com/repos/${{ env.TARGET_REPO }}/dispatches
           done
 
