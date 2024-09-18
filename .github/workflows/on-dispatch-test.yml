@@ -33,3 +33,4 @@ jobs:
       - name: Echo
         run: |
           echo "### Test Passed" >> $GITHUB_STEP_SUMMARY
+          echo "Payload: ${{ github.event.client_payload}}" >> $GITHUB_STEP_SUMMARY

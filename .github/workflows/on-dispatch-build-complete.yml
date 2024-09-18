@@ -30,11 +30,11 @@ jobs:
           repository: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
           fetch-depth: 1
 
-      - name: Read score file
+      - name: Read score file and dispatch
         id: score
         env:
           GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
-          TARGET_REPO: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
+          TARGET_REPO: dr3dr3/template-idp
         run: |
           echo "### 📄 Reading score file" >> $GITHUB_STEP_SUMMARY
           score=$(yq '.resources[].type' score.yml -o=csv)
