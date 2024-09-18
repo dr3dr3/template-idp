@@ -1,0 +1,35 @@
+name: ON-DISPATCH-TEST
+run-name: Event handler for 'test' ( Triggered by ${{ github.event_name }} and run by ${{ github.actor }} )
+
+on:
+  repository_dispatch:
+    types: [test]
+
+# event_type: build-complete
+# deployment-stage: Will be CI if event is build-complete
+# source-repo-owner: dr3dr3
+# source-repo-name: lrndo-docusaurus
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+
+  run-test:
+    name: Run test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+
+      # - name: Checkout
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
+      #     fetch-depth: 1
+
+      - name: Echo
+        run: |
+          echo "### Test Passed" >> $GITHUB_STEP_SUMMARY

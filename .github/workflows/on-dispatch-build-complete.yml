@@ -1,0 +1,51 @@
+name: ON-DISPATCH-BUILD-COMPLETE
+run-name: Event handler for 'build-complete' ( Triggered by ${{ github.event_name }} and run by ${{ github.actor }} )
+
+on:
+  repository_dispatch:
+    types: [build-complete]
+
+# event_type: build-complete
+# deployment-stage: Will be CI if event is build-complete
+# source-repo-owner: dr3dr3
+# source-repo-name: lrndo-docusaurus
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+
+  read-score-file:
+    name: Read score file
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
+          fetch-depth: 1
+
+      - name: Read score file
+        id: score
+        env:
+          GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
+          TARGET_REPO: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
+        run: |
+          echo "### 📄 Reading score file" >> $GITHUB_STEP_SUMMARY
+          score=$(yq '.resources[].type' score.yml -o=csv)
+          array=$(yq '.resources[].type' score.yml -o=csv)
+          for resource in $array; do
+            PAYLOAD=$(r="$resource" yq '.resources[] | select(.type == env(r) )' score.yml -o=json | jq -c)
+            echo "Payload: $PAYLOAD"
+            curl -H "Accept: application/vnd.github.everest-preview+json" \
+            -H "Authorization: token ${{ env.GHA_TOKEN }}" \
+            --request POST --data '{"event_type": "test", "client_payload": "$PAYLOAD"}' \
+            https://api.github.com/repos/${{ env.TARGET_REPO }}/dispatches
+          done
+
+

@@ -1,0 +1,100 @@
+name: ON-DISPATCH-STATICSITE-VERCEL-DEPLOY
+run-name: Deploy Static Site to Vercel ( Triggered by ${{ github.event_name }} and run by ${{ github.actor }} )
+
+on:
+  repository_dispatch:
+    types: [staticsite-vercel-deploy]
+
+# event_type: build-complete
+# deployment-stage: Will be CI if event is build-complete
+# source-repo-owner: dr3dr3
+# source-repo-name: lrndo-docusaurus
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+
+  get-build-artifacts:
+    name: Get build artifact
+    if: ${{ github.event.client_payload.success }}
+    uses: dr3dr3/core-pipeline/.github/workflows/staticsite-get-build-artifact.yml@main
+    permissions:
+      contents: none
+    with:
+      artifact-url: ${{ format('{0}/{1}/{2}/{3}', 'https://api.github.com/repos', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name, 'releases/latest' ) }}
+      artifact-ref: ${{ format('{0}-{1}', 'RC', github.run_id ) }}
+
+  # environment-logic:
+  #   name: Get target environment for deployment
+  #   needs: [get-build-artifacts]
+  #   timeout-minutes: 10
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: none
+  #   outputs:
+  #     target: ${{ steps.target.outputs.TARGET }}
+  #   env:
+  #     DEPLOYMENT_STAGE: ${{ github.event.client_payload.deployment-stage }}
+  #   steps:
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+      
+  #     - name: Target
+  #       id: target
+  #       run: |
+  #         config=$(ds=$DEPLOYMENT_STAGE yq '.environments[] | select(.id == env(ds))' configuration/environments/staticsite.yml -o=json | jq -c)
+  #         target=$(echo $config | jq -r '.target')
+  #         echo "### 🎯 Target = $target" >> $GITHUB_STEP_SUMMARY
+  #         echo "TARGET=$target" >> $GITHUB_OUTPUT
+
+  # #===== VERCEL =========================================================================================#
+
+  # ### New job... IF infrastructure is not ready, then do day1 creation of infrastructure
+
+  # vercel-variables:
+  #   name: Get variables needed for Vercel
+  #   needs: [environment-logic]
+  #   if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
+  #   timeout-minutes: 10
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: none
+  #   outputs:
+  #     vercel-project-id: ${{ steps.vercel-project-id.outputs.result }}
+  #   steps:
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v4
+
+  #     - name: Install Node dependencies
+  #       run: npm install
+
+  #     - name: Get variables from repository
+  #       id: vercel-project-id
+  #       run: .github/actions-scripts/repo-vars-get-value.mjs
+  #       env:
+  #         GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
+  #         REPO_OWNER: ${{ github.event.client_payload.source-repo-owner }}
+  #         REPO_NAME: ${{ github.event.client_payload.source-repo-name }}
+  #         VAR_NAME: 'VERCEL_PROJECT_ID'
+
+  # deploy-vercel:
+  #   name: Deploy to ${{ github.event.client_payload.deployment-stage }} environment
+  #   needs: [vercel-variables]
+  #   ### if: ${{ needs.environment-logic.outputs.target == 'VERCEL' }}
+  #   uses: dr3dr3/core-ops/.github/workflows/staticsite-vercel-deployment.yml@main
+  #   permissions:
+  #     contents: none
+  #   secrets: inherit
+  #   with:
+  #     artefact-ref: ${{ format('{0}-{1}', 'RC', github.run_id ) }}
+  #     vercel-project-id: ${{ needs.vercel-variables.outputs.vercel-project-id }}
+
+  ### TODO: Post deployment steps, including tests. Run from core-pipeline.
