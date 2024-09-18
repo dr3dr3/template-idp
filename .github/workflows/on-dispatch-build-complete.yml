@@ -44,7 +44,7 @@ jobs:
             echo "Payload: $PAYLOAD"
             curl -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Authorization: token ${{ env.GHA_TOKEN }}" \
-            --request POST --data '{"event_type": "test", "client_payload": "$PAYLOAD"}' \
+            --request POST --data '{"event_type": "test", "client_payload": $PAYLOAD}' \
             https://api.github.com/repos/${{ env.TARGET_REPO }}/dispatches
           done
 
