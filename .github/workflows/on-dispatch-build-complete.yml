@@ -56,7 +56,7 @@ jobs:
             EVENT=$(jq -n | jq --arg event_type "$DEFN_DRIVER" '. += $ARGS.named' -c)
             DATA1=$(echo $EVENT | jq --argjson client_payload "$SCORE_DATA" '. += $ARGS.named' -c)
             DATA2=$(echo $DATA1 | jq --argjson driver_inputs "$DEFN_INPUTS" '.client_payload += $ARGS.named' -c)
-            DATA_FINAL=$(echo $DATA2 | jq --arg sourceRepo "${{ env.SOURCE_REPO }}" '.client_payload += $ARGS.named' -c)
+            DATA_FINAL=$(echo $DATA2 | jq --arg source_repo "${{ env.SOURCE_REPO }}" '.client_payload += $ARGS.named' -c)
             echo $DATA_FINAL
             echo "Dispatched: $DATA_FINAL" >> $GITHUB_STEP_SUMMARY
             curl -H "Accept: application/vnd.github.everest-preview+json" \
