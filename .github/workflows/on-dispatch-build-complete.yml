@@ -11,9 +11,7 @@ on:
 # source-repo-name: lrndo-docusaurus
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: none
 
 jobs:
 
@@ -21,7 +19,7 @@ jobs:
     name: Read score file
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: none
     steps:
 
       - name: Checkout Source Repo
@@ -55,7 +53,7 @@ jobs:
             DEFN_INPUTS=$(yq '.[] | select(.criteria.environmentCI == true) | .driverInputs.values' $DEFN_FILE -o=json | jq -c)
             DEFN_DRIVER=$(yq '.[] | select(.criteria.environmentCI == true) | .driver' $DEFN_FILE -r)
             SCORE_DATA=$(r="$resource" yq '.resources[] | select(.type == env(r) )' source/score.yml -o=json | jq -c)
-            EVENT=$(jq -n | jq --arg event_type "test" '. += $ARGS.named' -c)
+            EVENT=$(jq -n | jq --arg event_type "$DEFN_DRIVER" '. += $ARGS.named' -c)
             DATA1=$(echo $EVENT | jq --argjson client_payload "$SCORE_DATA" '. += $ARGS.named' -c)
             DATA2=$(echo $DATA1 | jq --argjson driver_inputs "$DEFN_INPUTS" '.client_payload += $ARGS.named' -c)
             echo $DATA2
