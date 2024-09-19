@@ -30,7 +30,7 @@ hosting-on-ghprepo:
     values:
       target: na
   criteria:
-    environmentCI: true
+    environmentCI: false
 
 hosting-on-vercel:
   type: static-site-hosting
@@ -39,5 +39,6 @@ hosting-on-vercel:
     values:
       target: na
   criteria:
+    environmentCI: true
     environmentSTG: true
     environmentPRD: true
