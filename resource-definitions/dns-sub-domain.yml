@@ -1,0 +1,19 @@
+apiVersion: lrndo.com/v1
+
+kind: Definition
+
+metadata:
+  name: "DNS Sub Domain"
+
+dns-route53:
+  type: dns-sub-domain
+  driver: dnssubdomain-route53
+  driverInputs:
+    values:
+      domain: "lrndo.com"
+      subDomainPrefix: "docusaurus"
+  criteria: 
+    environmentPRD: true
+    environmentSTG: true
+    environmentSBX: false
+    environmentCI: true

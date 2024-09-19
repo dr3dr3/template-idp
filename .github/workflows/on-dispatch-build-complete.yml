@@ -24,30 +24,39 @@ jobs:
       contents: read
     steps:
 
-      - name: Checkout
+      - name: Checkout Source Repo
         uses: actions/checkout@v4
         with:
           repository: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
           fetch-depth: 1
+          path: 'source'
 
-      - name: Read score file and dispatch
+      - name: Checkout GitOps Repo
+        uses: actions/checkout@v4
+        with:
+          repository: 'dr3dr3/template-gitops'
+          fetch-depth: 1
+
+      - name: Dispatch to Resource Drivers
         id: score
         env:
           GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
-          TARGET_REPO: dr3dr3/template-idp
+          TARGET_REPO: dr3dr3/core-ops
         run: |
           echo "### 📄 Reading score file" >> $GITHUB_STEP_SUMMARY
-          array=$(yq '.resources[].type' score.yml -o=csv)
+          array=$(yq '.resources[].type' source/score.yml -o=csv)
           for resource in $array; do
-            PAYLOAD=$(r="$resource" yq '.resources[] | select(.type == env(r) )' score.yml -o=json | jq -c)
-            EVENT=$(jq -n '{"event_type":"test"}' -c)
-            DATA=$(echo $EVENT | jq --argjson client_payload "$PAYLOAD" '. += $ARGS.named' -c)
-            echo $DATA
-            echo "Dispatched: $DATA" >> $GITHUB_STEP_SUMMARY
+            DEFN_FILE="resource-definitions/$resource.yml"
+            DEFN_INPUTS=$(yq '.[] | select(.criteria.environmentCI == true) | .driverInputs.values' $DEFN_FILE -o=json | jq -c)
+            DEFN_DRIVER=$(yq '.[] | select(.criteria.environmentCI == true) | .driver' $DEFN_FILE -r)
+            SCORE_DATA=$(r="$resource" yq '.resources[] | select(.type == env(r) )' source/score.yml -o=json | jq -c)
+            EVENT=$(jq -n | jq --arg event_type "test" '. += $ARGS.named' -c)
+            DATA1=$(echo $EVENT | jq --argjson client_payload "$SCORE_DATA" '. += $ARGS.named' -c)
+            DATA2=$(echo $DATA1 | jq --argjson driver_inputs "$DEFN_INPUTS" '.client_payload += $ARGS.named' -c)
+            echo $DATA2
+            echo "Dispatched: $DATA2" >> $GITHUB_STEP_SUMMARY
             curl -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Authorization: token ${{ env.GHA_TOKEN }}" \
-            --request POST --data ${DATA} \
+            --request POST --data ${DATA2} \
             https://api.github.com/repos/${{ env.TARGET_REPO }}/dispatches
           done
-
-

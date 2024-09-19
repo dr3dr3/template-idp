@@ -1,0 +1,43 @@
+apiVersion: lrndo.com/v1
+
+kind: Definition
+
+metadata:
+  name: "Static Site Hosting"
+
+hosting-on-surge:
+  type: static-site-hosting
+  driver: staticsite-surge
+  driverInputs:
+    values:
+      target: na
+  criteria:
+    environmentSBX: true
+
+hosting-on-ghpages:
+  type: static-site-hosting
+  driver: staticsite-ghpages
+  driverInputs:
+    values:
+      target: na
+  criteria:
+    environmentCI: false
+
+hosting-on-ghprepo:
+  type: static-site-hosting
+  driver: staticsite-ghprepo
+  driverInputs:
+    values:
+      target: na
+  criteria:
+    environmentCI: true
+
+hosting-on-vercel:
+  type: static-site-hosting
+  driver: staticsite-vercel
+  driverInputs:
+    values:
+      target: na
+  criteria:
+    environmentSTG: true
+    environmentPRD: true
