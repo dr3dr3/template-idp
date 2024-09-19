@@ -43,7 +43,7 @@ jobs:
         id: score
         env:
           GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
-          TARGET_REPO: dr3dr3/core-ops
+          TARGET_REPO: dr3dr3/template-gitops
         run: |
           echo "### 📄 Reading score file" >> $GITHUB_STEP_SUMMARY
           ls -d -- */
