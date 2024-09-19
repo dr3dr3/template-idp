@@ -44,6 +44,7 @@ jobs:
           TARGET_REPO: dr3dr3/core-ops
         run: |
           echo "### 📄 Reading score file" >> $GITHUB_STEP_SUMMARY
+          ls -d -- */
           array=$(yq '.resources[].type' source/score.yml -o=csv)
           for resource in $array; do
             DEFN_FILE="resource-definitions/$resource.yml"
