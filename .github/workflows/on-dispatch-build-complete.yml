@@ -38,8 +38,8 @@ jobs:
       - name: Checkout GitOps Repo
         uses: actions/checkout@v4
         with:
-          repository: 'dr3dr3/template-gitops'
           fetch-depth: 1
+          path: idp
 
       - name: Dispatch to Resource Drivers
         id: score
@@ -51,7 +51,7 @@ jobs:
           ls -d -- */
           array=$(yq '.resources[].type' source/score.yml -o=csv)
           for resource in $array; do
-            DEFN_FILE="resource-definitions/$resource.yml"
+            DEFN_FILE="idp/resource-definitions/$resource.yml"
             DEFN_INPUTS=$(yq '.[] | select(.criteria.environmentCI == true) | .driverInputs.values' $DEFN_FILE -o=json | jq -c)
             DEFN_DRIVER=$(yq '.[] | select(.criteria.environmentCI == true) | .driver' $DEFN_FILE -r)
             SCORE_DATA=$(r="$resource" yq '.resources[] | select(.type == env(r) )' source/score.yml -o=json | jq -c)
