@@ -40,7 +40,6 @@ jobs:
           path: idp
 
       - name: Dispatch to Resource Drivers
-        id: score
         env:
           SOURCE_REPO: ${{ format('{0}/{1}', github.event.client_payload.source-repo-owner, github.event.client_payload.source-repo-name ) }}
           GHA_TOKEN: ${{ secrets.GHAPAT_IDP_REPO }}
@@ -59,7 +58,7 @@ jobs:
             DATA2=$(echo $DATA1 | jq --argjson driver_inputs "$DEFN_INPUTS" '.client_payload += $ARGS.named' -c)
             DATA_FINAL=$(echo $DATA2 | jq --arg sourceRepo "${{ env.SOURCE_REPO }}" '.client_payload += $ARGS.named' -c)
             echo $DATA_FINAL
-            echo "Dispatched: $DATA2" >> $GITHUB_STEP_SUMMARY
+            echo "Dispatched: $DATA_FINAL" >> $GITHUB_STEP_SUMMARY
             curl -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Authorization: token ${{ env.GHA_TOKEN }}" \
             --request POST --data ${DATA_FINAL} \
